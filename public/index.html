@@ -31,8 +31,8 @@
         top: 0;
         right: 0;
         bottom: 0;
-        width: 25%;
-        overflow: auto;
+        width: 20%;
+        overflow:scroll;
         background: rgba(255, 255, 255, 0.8);
       }
       #map canvas {
@@ -45,119 +45,104 @@
         width: 20%;
         top: 0;
         left: 0;
-        padding: 10px;
+        padding: 5px;
       }
 
       .map-overlay .map-overlay-inner {
         background-color: #fff;
+        opacity:0.9;
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
         border-radius: 3px;
         padding: 10px;
-        margin-bottom: 10px;
+        padding-left: 30px;
+        padding-right: 30px;
+        margin-bottom: 5px;
       }
 
       [slider] {
+
         position: relative;
+        width: 100%;
         height: 10px;
-        border-radius: 10px;
-        text-align: left;
         margin: 28px 0 10px 0;
       }
 
       [slider] > div {
-        position: absolute;
-        left: 20px;
-        right: 20px;
+        position: relative;
+        width: 100%;
       }
 
       [slider] > div > [inverse-left] {
         position: absolute;
         left: 0;
         height: 8px;
-        border-radius: 8px;
         background-color: #cccccc;
-        margin: 0;
       }
 
       [slider] > div > [inverse-right] {
         position: absolute;
         right: 0;
         height: 8px;
-        border-radius: 8px;
         background-color: #cccccc;
-        margin: 0;
       }
 
       [slider] > div > [range] {
         position: absolute;
-        left: 0;
         height: 8px;
         background-color: #ffe100;
       }
 
-      [slider] > div > [thumb] {
+      [slider] > div > [thumb-left] {
         position: absolute;
+        pointer-events: all;
+        margin-right: 10px;
         top: -7px;
-        z-index: 2;
         height: 21px;
-        width: 10px;
-        text-align: left;
-        margin-left: -2px;
-        cursor: grab;
+        width: 12px;
+        cursor: not-allowed;
+        background-color: #444444;
+      }
+
+      [slider] > div > [thumb-right] {
+        position: absolute;
+        pointer-events: all;
+        margin-left: -10px;
+        top: -7px;
+        height: 21px;
+        width: 12px;
+        cursor: not-allowed;
         background-color: #444444;
       }
 
       [slider] > input[type="range"] {
         position: absolute;
+        width: 100%;
         pointer-events: none;
         z-index: 3;
         height: 14px;
-        top: -2px;
-        width: 100%;
         opacity: 0;
       }
 
       div[slider] > input[type="range"]::-ms-thumb {
         pointer-events: all;
-        width: 28px;
-        height: 28px;
-        border-radius: 0px;
-        border: 0 none;
-        background: red;
       }
 
       div[slider] > input[type="range"]::-moz-range-thumb {
         pointer-events: all;
-        width: 28px;
-        height: 28px;
-        border-radius: 0px;
-        border: 0 none;
-        background: red;
       }
 
       div[slider] > input[type="range"]::-webkit-slider-thumb {
         pointer-events: all;
-        width: 28px;
-        height: 28px;
-        border-radius: 0px;
-        border: 0 none;
-        background: red;
       }
 
       [slider] > div > [sign] {
         opacity: 1;
         position: absolute;
-        margin-left: -11px;
         top: -28px;
         z-index: 3;
-        background-color: transparent;
         color: #000000;
         width: 28px;
-        height: 28px;
-        border-radius: 28px;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
+        margin-left: -5px;
       }
     </style>
   </head>
@@ -165,14 +150,14 @@
     <div id="map"></div>
     <div id="map-input" class="map-overlay top">
       <div class="map-overlay-inner">
-        <label>Darkest Month Solar Radiation (kJ/m^2/day)</label>
+        <label>Darkest Month Solar Radiation (kJ/m^2/day) [fill-color]</label>
         <div slider id="sol_min_slider">
           <div>
             <div inverse-left style="width: 100%"></div>
             <div inverse-right style="width: 100%"></div>
             <div range style="left: 0%; right: 0%"></div>
-            <span thumb style="left: 0%"></span>
-            <span thumb style="left: 100%"></span>
+            <span thumb-left style="left: 0%"></span>
+            <span thumb-right style="left: 100%"></span>
             <div sign style="left: 0%">
               <span id="value">0</span>
             </div>
@@ -215,15 +200,14 @@
         children[13].childNodes[1].innerHTML=this.value;"
           />
         </div>
-        <br />
         <label>Brightest Month Solar Radiation (kJ/m^2/day)</label>
         <div slider id="sol_max_slider">
           <div>
             <div inverse-left style="width: 100%"></div>
             <div inverse-right style="width: 100%"></div>
             <div range style="left: 0%; right: 0%"></div>
-            <span thumb style="left: 0%"></span>
-            <span thumb style="left: 100%"></span>
+            <span thumb-left style="left: 0%"></span>
+            <span thumb-right style="left: 100%"></span>
             <div sign style="left: 0%">
               <span id="value">0</span>
             </div>
@@ -275,8 +259,8 @@
             <div inverse-left style="width: 100%"></div>
             <div inverse-right style="width: 100%"></div>
             <div range style="left: 0%; right: 0%"></div>
-            <span thumb style="left: 0%"></span>
-            <span thumb style="left: 100%"></span>
+            <span thumb-left style="left: 0%"></span>
+            <span thumb-right style="left: 100%"></span>
             <div sign style="left: 0%">
               <span id="value">0</span>
             </div>
@@ -319,15 +303,14 @@
         children[13].childNodes[1].innerHTML=this.value;"
           />
         </div>
-        <br />
         <label>Wettest Month Precipitation (mm/month)</label>
         <div slider id="pre_max_slider">
           <div>
             <div inverse-left style="width: 100%"></div>
             <div inverse-right style="width: 100%"></div>
             <div range style="left: 0%; right: 0%"></div>
-            <span thumb style="left: 0%"></span>
-            <span thumb style="left: 100%"></span>
+            <span thumb-left style="left: 0%"></span>
+            <span thumb-right style="left: 100%"></span>
             <div sign style="left: 0%">
               <span id="value">0</span>
             </div>
@@ -379,8 +362,8 @@
             <div inverse-left style="width: 100%"></div>
             <div inverse-right style="width: 100%"></div>
             <div range style="left: 0%; right: 0%"></div>
-            <span thumb style="left: 0%"></span>
-            <span thumb style="left: 100%"></span>
+            <span thumb-left style="left: 0%"></span>
+            <span thumb-right style="left: 100%"></span>
             <div sign style="left: 0%">
               <span id="value">-50</span>
             </div>
@@ -423,15 +406,14 @@
         children[13].childNodes[1].innerHTML=this.value;"
           />
         </div>
-        <br />
         <label>Warmest Month Temperature (°C)</label>
         <div slider id="tav_max_slider">
           <div>
             <div inverse-left style="width: 100%"></div>
             <div inverse-right style="width: 100%"></div>
             <div range style="left: 0%; right: 0%"></div>
-            <span thumb style="left: 0%"></span>
-            <span thumb style="left: 100%"></span>
+            <span thumb-left style="left: 0%"></span>
+            <span thumb-right style="left: 100%"></span>
             <div sign style="left: 0%">
               <span id="value">-20</span>
             </div>
@@ -488,7 +470,7 @@
         style: "https://demotiles.maplibre.org/style.json", // style URL
         center: [0, 20], // starting position [lng, lat]
         zoom: 2, // starting zoom
-        minZoom: 2,
+        minZoom: 1,
         maxZoom: 6,
       });
 
@@ -530,48 +512,48 @@
           type: "fill",
           source: {
             type: "vector",
-            url: "pmtiles://tiles/filepop.pmtiles",
+            url: "pmtiles://tiles/filenew.pmtiles" //,"http://localhost:3000/filetest" 
           },
           filter: ["==", "$type", "Polygon"],
-          "source-layer": "solpretav_minmax_pop",
+          "source-layer": "spt_minmax",
           paint: {
-            "fill-outline-color": "rgba(0,0,0,0.5)",
-            "fill-color": "#ffe100" /* [
+            "fill-outline-color": "rgba(0,0,0,0)",
+            "fill-color":  [
               "interpolate",
               ["linear"],
               ["number", ["get", "sol_min"]],
               0,
               "#000000",
               20000,
-              "#ffe100",
-            ],*/,
-            "fill-opacity": 0.6,
+              "#ffffff",
+            ],//"#ffe100"
+            "fill-opacity": 0.75,
           },
         });
 
-        map.addLayer({
-          id: "point-layer",
-          type: "circle",
-          source: {
-            type: "vector",
-            url: "pmtiles://tiles/filepop.pmtiles",
-          },
-          filter: ["==", "$type", "Point"],
-          "source-layer": "solpretav_minmax_pop",
-          paint: {
-            "circle-radius": [
-              "interpolate",
-              ["linear"],
-              ["zoom"],
-              2,
-              ["*", ["+", ["*", ["get", "scalerank"], -1], 7], 0.7],
-              6,
-              ["+", ["*", ["get", "scalerank"], -1], 10],
-            ],
-            "circle-color": "#B42222",
-            "circle-opacity": 0.7,
-          },
-        });
+        // map.addLayer({
+        //   id: "point-layer",
+        //   type: "circle",
+        //   source: {
+        //     type: "vector",
+        //     url: "pmtiles://tiles/filenew.pmtiles",
+        //   },
+        //   filter: ["==", "$type", "Point"],
+        //   "source-layer": "spt_minmax",
+        //   paint: {
+        //     "circle-radius": ["+", ["*", ["get", "SCALERANK"], -1], 10], /* [
+        //       "interpolate",
+        //       ["linear"],
+        //       ["zoom"],
+        //       2,
+        //       ["*", ["+", ["*", ["get", "SCALERANK"], -1], 7], 0.6],
+        //       6,
+        //       ["+", ["*", ["get", "SCALERANK"], -1], 10],
+        //     ], */
+        //     "circle-color": "#B42222",
+        //     "circle-opacity": 1
+        //   },
+        // });
 
         document.getElementById("map-input").addEventListener("mouseup", () => {
           // Precipitation
@@ -582,7 +564,7 @@
           let preciMinRightValue = parseInt(
             document.getElementById("pre_min_slider_right").value
           );
-          if (preciMinRightValue == 300) {
+          if (preciMinRightValue >= 300) {
             preciMinRightValue = 9000;
           }
 
@@ -592,7 +574,7 @@
           let preciMaxRightValue = parseInt(
             document.getElementById("pre_max_slider_right").value
           );
-          if (preciMaxRightValue == 900) {
+          if (preciMaxRightValue >= 900) {
             preciMaxRightValue = 9000;
           }
 
@@ -603,7 +585,7 @@
           let solarMinRightValue = parseInt(
             document.getElementById("sol_min_slider_right").value
           );
-          if (solarMinRightValue == 20000) {
+          if (solarMinRightValue >= 20000) {
             solarMinRightValue = 60000;
           }
 
@@ -613,29 +595,35 @@
           let solarMaxRightValue = parseInt(
             document.getElementById("sol_max_slider_right").value
           );
-          if (solarMinRightValue == 30000) {
-            solarMinRightValue = 60000;
+          if (solarMaxRightValue >= 30000) {
+            solarMaxRightValue = 60000;
           }
 
           // Temp
-          const tavMinLeftValue = parseInt(
+          let tavMinLeftValue = parseInt(
             document.getElementById("tav_min_slider_left").value
           );
+          if (tavMinLeftValue <= -50) {
+            tavMinLeftValue = -200;
+          }
           let tavMinRightValue = parseInt(
             document.getElementById("tav_min_slider_right").value
           );
-          if (tavMinRightValue == 20000) {
-            tavarMinRightValue = 60000;
+          if (tavMinRightValue >= 30) {
+            tavMinRightValue = 60;
           }
 
-          const tavMaxLeftValue = parseInt(
+          let tavMaxLeftValue = parseInt(
             document.getElementById("tav_max_slider_left").value
           );
+          if (tavMaxLeftValue <= -20) {
+            tavMaxLeftValue = -200;
+          }
           let tavMaxRightValue = parseInt(
             document.getElementById("tav_max_slider_right").value
           );
-          if (tavMinRightValue == 30000) {
-            tavMinRightValue = 60000;
+          if (tavMaxRightValue >= 40) {
+            tavMaxRightValue = 60;
           }
 
           filterBy(
