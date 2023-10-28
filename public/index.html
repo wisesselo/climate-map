@@ -12,7 +12,11 @@
       rel="stylesheet"
       href="https://unpkg.com/maplibre-gl@3.3.1/dist/maplibre-gl.css"
     />
-
+    <script src="nouislider.js"></script>
+    <link
+      href="slider.css"
+      rel="stylesheet"
+    />
     <script src="https://unpkg.com/maplibre-gl@3.3.1/dist/maplibre-gl.js"></script>
     <script src="https://unpkg.com/pmtiles@2.5.0/dist/index.js"></script>
     <style>
@@ -32,7 +36,7 @@
         right: 0;
         bottom: 0;
         width: 20%;
-        overflow:scroll;
+        overflow: scroll;
         background: rgba(255, 255, 255, 0.8);
       }
       #map canvas {
@@ -42,7 +46,8 @@
       .map-overlay {
         font: 12px/20px "Helvetica Neue", Arial, Helvetica, sans-serif;
         position: absolute;
-        width: 20%;
+        width: 25%;
+        min-width: 290px;
         top: 0;
         left: 0;
         padding: 5px;
@@ -50,17 +55,14 @@
 
       .map-overlay .map-overlay-inner {
         background-color: #fff;
-        opacity:0.9;
+        opacity: 0.9;
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-        border-radius: 3px;
+        border-radius: 4px;
         padding: 10px;
-        padding-left: 30px;
-        padding-right: 30px;
         margin-bottom: 5px;
       }
 
       [slider] {
-
         position: relative;
         width: 100%;
         height: 10px;
@@ -150,312 +152,23 @@
     <div id="map"></div>
     <div id="map-input" class="map-overlay top">
       <div class="map-overlay-inner">
-        <label>Darkest Month Solar Radiation (kJ/m^2/day) [fill-color]</label>
-        <div slider id="sol_min_slider">
-          <div>
-            <div inverse-left style="width: 100%"></div>
-            <div inverse-right style="width: 100%"></div>
-            <div range style="left: 0%; right: 0%"></div>
-            <span thumb-left style="left: 0%"></span>
-            <span thumb-right style="left: 100%"></span>
-            <div sign style="left: 0%">
-              <span id="value">0</span>
-            </div>
-            <div sign style="left: 100%">
-              <span id="value">20000</span>
-            </div>
-          </div>
-
-          <input
-            id="sol_min_slider_left"
-            type="range"
-            min="0"
-            max="20000"
-            step="1000"
-            value="0"
-            oninput="
-        this.value=Math.min(this.value,this.parentNode.childNodes[5].value-1);
-        var value=(100/(parseInt(this.max)-parseInt(this.min)))*parseInt(this.value)-(100/(parseInt(this.max)-parseInt(this.min)))*parseInt(this.min);
-        var children = this.parentNode.childNodes[1].childNodes;
-        children[1].style.width=value+'%';
-        children[5].style.left=value+'%';
-        children[7].style.left=value+'%';children[11].style.left=value+'%';
-        children[11].childNodes[1].innerHTML=this.value;"
-          />
-
-          <input
-            id="sol_min_slider_right"
-            type="range"
-            min="0"
-            max="20000"
-            step="1000"
-            value="20000"
-            oninput="
-        this.value=Math.max(this.value,this.parentNode.childNodes[3].value-(-1));
-        var value=(100/(parseInt(this.max)-parseInt(this.min)))*parseInt(this.value)-(100/(parseInt(this.max)-parseInt(this.min)))*parseInt(this.min);
-        var children = this.parentNode.childNodes[1].childNodes;
-        children[3].style.width=(100-value)+'%';
-        children[5].style.right=(100-value)+'%';
-        children[9].style.left=value+'%';children[13].style.left=value+'%';
-        children[13].childNodes[1].innerHTML=this.value;"
-          />
-        </div>
-        <label>Brightest Month Solar Radiation (kJ/m^2/day)</label>
-        <div slider id="sol_max_slider">
-          <div>
-            <div inverse-left style="width: 100%"></div>
-            <div inverse-right style="width: 100%"></div>
-            <div range style="left: 0%; right: 0%"></div>
-            <span thumb-left style="left: 0%"></span>
-            <span thumb-right style="left: 100%"></span>
-            <div sign style="left: 0%">
-              <span id="value">0</span>
-            </div>
-            <div sign style="left: 100%">
-              <span id="value">30000</span>
-            </div>
-          </div>
-
-          <input
-            id="sol_max_slider_left"
-            type="range"
-            min="0"
-            max="30000"
-            step="1000"
-            value="0"
-            oninput="
-        this.value=Math.min(this.value,this.parentNode.childNodes[5].value-1);
-        var value=(100/(parseInt(this.max)-parseInt(this.min)))*parseInt(this.value)-(100/(parseInt(this.max)-parseInt(this.min)))*parseInt(this.min);
-        var children = this.parentNode.childNodes[1].childNodes;
-        children[1].style.width=value+'%';
-        children[5].style.left=value+'%';
-        children[7].style.left=value+'%';children[11].style.left=value+'%';
-        children[11].childNodes[1].innerHTML=this.value;"
-          />
-
-          <input
-            id="sol_max_slider_right"
-            type="range"
-            min="0"
-            max="30000"
-            step="1000"
-            value="30000"
-            oninput="
-        this.value=Math.max(this.value,this.parentNode.childNodes[3].value-(-1));
-        var value=(100/(parseInt(this.max)-parseInt(this.min)))*parseInt(this.value)-(100/(parseInt(this.max)-parseInt(this.min)))*parseInt(this.min);
-        var children = this.parentNode.childNodes[1].childNodes;
-        children[3].style.width=(100-value)+'%';
-        children[5].style.right=(100-value)+'%';
-        children[9].style.left=value+'%';children[13].style.left=value+'%';
-        children[13].childNodes[1].innerHTML=this.value;"
-          />
-        </div>
+        <label>Darkest Month Solar Radiation (kJ/m²/day) [fill-color]</label>
+        <div id="solar-min-slider" style="margin: 30px 15px 15px 15px;"></div>
+        <label>Brightest Month Solar Radiation (kJ/m²/day)</label>
+        <div id="solar-max-slider" style="margin: 30px 15px 15px 15px;"></div>
       </div>
-
       <div class="map-overlay-inner">
         <label>Driest Month Precipitation (mm/month)</label>
-        <div slider id="pre_min_slider">
-          <div>
-            <div inverse-left style="width: 100%"></div>
-            <div inverse-right style="width: 100%"></div>
-            <div range style="left: 0%; right: 0%"></div>
-            <span thumb-left style="left: 0%"></span>
-            <span thumb-right style="left: 100%"></span>
-            <div sign style="left: 0%">
-              <span id="value">0</span>
-            </div>
-            <div sign style="left: 100%">
-              <span id="value">300</span>
-            </div>
-          </div>
-
-          <input
-            id="pre_min_slider_left"
-            type="range"
-            min="0"
-            max="300"
-            step="5"
-            value="0"
-            oninput="
-        this.value=Math.min(this.value,this.parentNode.childNodes[5].value-1);
-        var value=(100/(parseInt(this.max)-parseInt(this.min)))*parseInt(this.value)-(100/(parseInt(this.max)-parseInt(this.min)))*parseInt(this.min);
-        var children = this.parentNode.childNodes[1].childNodes;
-        children[1].style.width=value+'%';
-        children[5].style.left=value+'%';
-        children[7].style.left=value+'%';children[11].style.left=value+'%';
-        children[11].childNodes[1].innerHTML=this.value;"
-          />
-
-          <input
-            id="pre_min_slider_right"
-            type="range"
-            min="0"
-            max="300"
-            step="5"
-            value="300"
-            oninput="
-        this.value=Math.max(this.value,this.parentNode.childNodes[3].value-(-1));
-        var value=(100/(parseInt(this.max)-parseInt(this.min)))*parseInt(this.value)-(100/(parseInt(this.max)-parseInt(this.min)))*parseInt(this.min);
-        var children = this.parentNode.childNodes[1].childNodes;
-        children[3].style.width=(100-value)+'%';
-        children[5].style.right=(100-value)+'%';
-        children[9].style.left=value+'%';children[13].style.left=value+'%';
-        children[13].childNodes[1].innerHTML=this.value;"
-          />
-        </div>
+        <div id="precip-min-slider" style="margin: 30px 15px 15px 15px;"></div>
         <label>Wettest Month Precipitation (mm/month)</label>
-        <div slider id="pre_max_slider">
-          <div>
-            <div inverse-left style="width: 100%"></div>
-            <div inverse-right style="width: 100%"></div>
-            <div range style="left: 0%; right: 0%"></div>
-            <span thumb-left style="left: 0%"></span>
-            <span thumb-right style="left: 100%"></span>
-            <div sign style="left: 0%">
-              <span id="value">0</span>
-            </div>
-            <div sign style="left: 100%">
-              <span id="value">900</span>
-            </div>
-          </div>
-
-          <input
-            id="pre_max_slider_left"
-            type="range"
-            min="0"
-            max="900"
-            step="10"
-            value="0"
-            oninput="
-        this.value=Math.min(this.value,this.parentNode.childNodes[5].value-1);
-        var value=(100/(parseInt(this.max)-parseInt(this.min)))*parseInt(this.value)-(100/(parseInt(this.max)-parseInt(this.min)))*parseInt(this.min);
-        var children = this.parentNode.childNodes[1].childNodes;
-        children[1].style.width=value+'%';
-        children[5].style.left=value+'%';
-        children[7].style.left=value+'%';children[11].style.left=value+'%';
-        children[11].childNodes[1].innerHTML=this.value;"
-          />
-
-          <input
-            id="pre_max_slider_right"
-            type="range"
-            min="0"
-            max="900"
-            step="10"
-            value="900"
-            oninput="
-        this.value=Math.max(this.value,this.parentNode.childNodes[3].value-(-1));
-        var value=(100/(parseInt(this.max)-parseInt(this.min)))*parseInt(this.value)-(100/(parseInt(this.max)-parseInt(this.min)))*parseInt(this.min);
-        var children = this.parentNode.childNodes[1].childNodes;
-        children[3].style.width=(100-value)+'%';
-        children[5].style.right=(100-value)+'%';
-        children[9].style.left=value+'%';children[13].style.left=value+'%';
-        children[13].childNodes[1].innerHTML=this.value;"
-          />
-        </div>
+        <div id="precip-max-slider" style="margin: 30px 15px 15px 15px;"></div>
       </div>
-
       <div class="map-overlay-inner">
-        <label>Coldest Month Temperature (°C)</label>
-        <div slider id="tav_min_slider">
-          <div>
-            <div inverse-left style="width: 100%"></div>
-            <div inverse-right style="width: 100%"></div>
-            <div range style="left: 0%; right: 0%"></div>
-            <span thumb-left style="left: 0%"></span>
-            <span thumb-right style="left: 100%"></span>
-            <div sign style="left: 0%">
-              <span id="value">-50</span>
-            </div>
-            <div sign style="left: 100%">
-              <span id="value">30</span>
-            </div>
-          </div>
-
-          <input
-            id="tav_min_slider_left"
-            type="range"
-            min="-50"
-            max="30"
-            step="1"
-            value="-50"
-            oninput="
-        this.value=Math.min(this.value,this.parentNode.childNodes[5].value-1);
-        var value=(100/(parseInt(this.max)-parseInt(this.min)))*parseInt(this.value)-(100/(parseInt(this.max)-parseInt(this.min)))*parseInt(this.min);
-        var children = this.parentNode.childNodes[1].childNodes;
-        children[1].style.width=value+'%';
-        children[5].style.left=value+'%';
-        children[7].style.left=value+'%';children[11].style.left=value+'%';
-        children[11].childNodes[1].innerHTML=this.value;"
-          />
-
-          <input
-            id="tav_min_slider_right"
-            type="range"
-            min="-50"
-            max="30"
-            step="1"
-            value="30"
-            oninput="
-        this.value=Math.max(this.value,this.parentNode.childNodes[3].value-(-1));
-        var value=(100/(parseInt(this.max)-parseInt(this.min)))*parseInt(this.value)-(100/(parseInt(this.max)-parseInt(this.min)))*parseInt(this.min);
-        var children = this.parentNode.childNodes[1].childNodes;
-        children[3].style.width=(100-value)+'%';
-        children[5].style.right=(100-value)+'%';
-        children[9].style.left=value+'%';children[13].style.left=value+'%';
-        children[13].childNodes[1].innerHTML=this.value;"
-          />
-        </div>
-        <label>Warmest Month Temperature (°C)</label>
-        <div slider id="tav_max_slider">
-          <div>
-            <div inverse-left style="width: 100%"></div>
-            <div inverse-right style="width: 100%"></div>
-            <div range style="left: 0%; right: 0%"></div>
-            <span thumb-left style="left: 0%"></span>
-            <span thumb-right style="left: 100%"></span>
-            <div sign style="left: 0%">
-              <span id="value">-20</span>
-            </div>
-            <div sign style="left: 100%">
-              <span id="value">40</span>
-            </div>
-          </div>
-
-          <input
-            id="tav_max_slider_left"
-            type="range"
-            min="-20"
-            max="40"
-            step="1"
-            value="-20"
-            oninput="
-        this.value=Math.min(this.value,this.parentNode.childNodes[5].value-1);
-        var value=(100/(parseInt(this.max)-parseInt(this.min)))*parseInt(this.value)-(100/(parseInt(this.max)-parseInt(this.min)))*parseInt(this.min);
-        var children = this.parentNode.childNodes[1].childNodes;
-        children[1].style.width=value+'%';
-        children[5].style.left=value+'%';
-        children[7].style.left=value+'%';children[11].style.left=value+'%';
-        children[11].childNodes[1].innerHTML=this.value;"
-          />
-
-          <input
-            id="tav_max_slider_right"
-            type="range"
-            min="-20"
-            max="40"
-            step="1"
-            value="40"
-            oninput="
-        this.value=Math.max(this.value,this.parentNode.childNodes[3].value-(-1));
-        var value=(100/(parseInt(this.max)-parseInt(this.min)))*parseInt(this.value)-(100/(parseInt(this.max)-parseInt(this.min)))*parseInt(this.min);
-        var children = this.parentNode.childNodes[1].childNodes;
-        children[3].style.width=(100-value)+'%';
-        children[5].style.right=(100-value)+'%';
-        children[9].style.left=value+'%';children[13].style.left=value+'%';
-        children[13].childNodes[1].innerHTML=this.value;"
-          />
-        </div>
+        <label>Coldest Month Mean Temperature (°C)</label>
+        <div id="mean-temp-min-slider" style="margin: 30px 15px 15px 15px;"></div>
+        <label>Warmest Month Mean Temperature (°C)</label>
+        <div id="mean-temp-max-slider" style="margin: 30px 15px 15px 15px;"></div>
+      </div>
       </div>
     </div>
 
@@ -512,21 +225,21 @@
           type: "fill",
           source: {
             type: "vector",
-            url: "pmtiles://tiles/filenew.pmtiles" //,"http://localhost:3000/filetest" 
+            url: "pmtiles://tiles/filenew.pmtiles", //,"http://localhost:3000/filetest"
           },
           filter: ["==", "$type", "Polygon"],
           "source-layer": "spt_minmax",
           paint: {
             "fill-outline-color": "rgba(0,0,0,0)",
-            "fill-color":  [
+            "fill-color": [
               "interpolate",
               ["linear"],
               ["number", ["get", "sol_min"]],
               0,
               "#000000",
-              20000,
+              25000,
               "#ffffff",
-            ],//"#ffe100"
+            ], //"#ffe100"
             "fill-opacity": 0.75,
           },
         });
@@ -555,92 +268,128 @@
         //   },
         // });
 
+        // Binding signature
+        // solarMinSlider.noUiSlider.on('change', function () {
+        //   const solarMinRightValue = solarMin.noUiSlider.get(true)[1];
+        //   filterBy(
+        //     0,
+        //     solarMinRightValue,
+        //     0,
+        //     60000,
+        //     0,
+        //     9000,
+        //     0,
+        //     9000,
+        //     -50,
+        //     50,
+        //     -50,
+        //     50
+        //   );
+        //  });
+
         document.getElementById("map-input").addEventListener("mouseup", () => {
-          // Precipitation
-
-          const preciMinLeftValue = parseInt(
-            document.getElementById("pre_min_slider_left").value
-          );
-          let preciMinRightValue = parseInt(
-            document.getElementById("pre_min_slider_right").value
-          );
-          if (preciMinRightValue >= 300) {
-            preciMinRightValue = 9000;
-          }
-
-          const preciMaxLeftValue = parseInt(
-            document.getElementById("pre_max_slider_left").value
-          );
-          let preciMaxRightValue = parseInt(
-            document.getElementById("pre_max_slider_right").value
-          );
-          if (preciMaxRightValue >= 900) {
-            preciMaxRightValue = 9000;
-          }
-
-          // Solar
-          const solarMinLeftValue = parseInt(
-            document.getElementById("sol_min_slider_left").value
-          );
-          let solarMinRightValue = parseInt(
-            document.getElementById("sol_min_slider_right").value
-          );
-          if (solarMinRightValue >= 20000) {
-            solarMinRightValue = 60000;
-          }
-
-          const solarMaxLeftValue = parseInt(
-            document.getElementById("sol_max_slider_left").value
-          );
-          let solarMaxRightValue = parseInt(
-            document.getElementById("sol_max_slider_right").value
-          );
-          if (solarMaxRightValue >= 30000) {
-            solarMaxRightValue = 60000;
-          }
-
-          // Temp
-          let tavMinLeftValue = parseInt(
-            document.getElementById("tav_min_slider_left").value
-          );
-          if (tavMinLeftValue <= -50) {
-            tavMinLeftValue = -200;
-          }
-          let tavMinRightValue = parseInt(
-            document.getElementById("tav_min_slider_right").value
-          );
-          if (tavMinRightValue >= 30) {
-            tavMinRightValue = 60;
-          }
-
-          let tavMaxLeftValue = parseInt(
-            document.getElementById("tav_max_slider_left").value
-          );
-          if (tavMaxLeftValue <= -20) {
-            tavMaxLeftValue = -200;
-          }
-          let tavMaxRightValue = parseInt(
-            document.getElementById("tav_max_slider_right").value
-          );
-          if (tavMaxRightValue >= 40) {
-            tavMaxRightValue = 60;
-          }
-
           filterBy(
-            solarMinLeftValue,
-            solarMinRightValue,
-            solarMaxLeftValue,
-            solarMaxRightValue,
-            preciMinLeftValue,
-            preciMinRightValue,
-            preciMaxLeftValue,
-            preciMaxRightValue,
-            tavMinLeftValue,
-            tavMinRightValue,
-            tavMaxLeftValue,
-            tavMaxRightValue
+            solarMinSlider.noUiSlider.get(true)[0],
+            solarMinSlider.noUiSlider.get(true)[1],
+            solarMaxSlider.noUiSlider.get(true)[0],
+            solarMaxSlider.noUiSlider.get(true)[1],
+            precipMinSlider.noUiSlider.get(true)[0],
+            precipMinSlider.noUiSlider.get(true)[1],
+            precipMaxSlider.noUiSlider.get(true)[0],
+            precipMaxSlider.noUiSlider.get(true)[1],
+            meanTempMinSlider.noUiSlider.get(true)[0],
+            meanTempMinSlider.noUiSlider.get(true)[1],
+            meanTempMaxSlider.noUiSlider.get(true)[0],
+            meanTempMaxSlider.noUiSlider.get(true)[1]
           );
         });
+        //   // Precipitation
+
+        //   const preciMinLeftValue = parseInt(
+        //     document.getElementById("pre_min_slider_left").value
+        //   );
+        //   let preciMinRightValue = parseInt(
+        //     document.getElementById("pre_min_slider_right").value
+        //   );
+        //   if (preciMinRightValue >= 300) {
+        //     preciMinRightValue = 9000;
+        //   }
+
+        //   const preciMaxLeftValue = parseInt(
+        //     document.getElementById("pre_max_slider_left").value
+        //   );
+        //   let preciMaxRightValue = parseInt(
+        //     document.getElementById("pre_max_slider_right").value
+        //   );
+        //   if (preciMaxRightValue >= 900) {
+        //     preciMaxRightValue = 9000;
+        //   }
+
+        //   // Solar
+        //   const solarMinLeftValue = parseInt(
+        //     document.getElementById("sol_min_slider_left").value
+        //   );
+        //   let solarMinRightValue = parseInt(
+        //     document.getElementById("sol_min_slider_right").value
+        //   );
+        //   if (solarMinRightValue >= 25000) {
+        //     solarMinRightValue = 60000;
+        //   }
+        //   // solar nouislider
+        //   solarMinRightValue = slider.noUiSlider.get(true)[1];
+
+        //   const solarMaxLeftValue = parseInt(
+        //     document.getElementById("sol_max_slider_left").value
+        //   );
+        //   let solarMaxRightValue = parseInt(
+        //     document.getElementById("sol_max_slider_right").value
+        //   );
+        //   if (solarMaxRightValue >= 30000) {
+        //     solarMaxRightValue = 60000;
+        //   }
+
+        //   // Temp
+        //   let tavMinLeftValue = parseInt(
+        //     document.getElementById("tav_min_slider_left").value
+        //   );
+        //   if (tavMinLeftValue <= -50) {
+        //     tavMinLeftValue = -200;
+        //   }
+        //   let tavMinRightValue = parseInt(
+        //     document.getElementById("tav_min_slider_right").value
+        //   );
+        //   if (tavMinRightValue >= 30) {
+        //     tavMinRightValue = 60;
+        //   }
+
+        //   let tavMaxLeftValue = parseInt(
+        //     document.getElementById("tav_max_slider_left").value
+        //   );
+        //   if (tavMaxLeftValue <= -20) {
+        //     tavMaxLeftValue = -200;
+        //   }
+        //   let tavMaxRightValue = parseInt(
+        //     document.getElementById("tav_max_slider_right").value
+        //   );
+        //   if (tavMaxRightValue >= 40) {
+        //     tavMaxRightValue = 60;
+        //   }
+
+        //   filterBy(
+        //     solarMinLeftValue,
+        //     solarMinRightValue,
+        //     solarMaxLeftValue,
+        //     solarMaxRightValue,
+        //     preciMinLeftValue,
+        //     preciMinRightValue,
+        //     preciMaxLeftValue,
+        //     preciMaxRightValue,
+        //     tavMinLeftValue,
+        //     tavMinRightValue,
+        //     tavMaxLeftValue,
+        //     tavMaxRightValue
+        //   );
+        // });
       });
 
       map.on("mousemove", (e) => {
@@ -663,6 +412,87 @@
           null,
           2
         );
+      });
+
+      // Solar
+      var solarMinSlider = document.getElementById("solar-min-slider");
+
+      noUiSlider.create(solarMinSlider, {
+        start: [0, 25000],
+        step: 100,
+        connect: true,
+        tooltips: [true, true],
+        range: {
+          min: 0,
+          max: 25000,
+        },
+      });
+
+      var solarMaxSlider = document.getElementById("solar-max-slider");
+
+      noUiSlider.create(solarMaxSlider, {
+        start: [0, 45000],
+        step: 100,
+        connect: true,
+        tooltips: [true, true],
+        range: {
+          min: 0,
+          max: 45000,
+        },
+      });
+
+      // Precip
+      var precipMinSlider = document.getElementById("precip-min-slider");
+
+      noUiSlider.create(precipMinSlider, {
+        start: [0, 300],
+        step: 1,
+        connect: true,
+        tooltips: [true, true],
+        range: {
+          min: 0,
+          max: 300,
+        },
+      });
+
+      var precipMaxSlider = document.getElementById("precip-max-slider");
+
+      noUiSlider.create(precipMaxSlider, {
+        start: [0, 900],
+        step: 1,
+        connect: true,
+        tooltips: [true, true],
+        range: {
+          min: 0,
+          max: 900,
+        },
+      });
+
+      // Mean Temp
+      var meanTempMinSlider = document.getElementById("mean-temp-min-slider");
+
+      noUiSlider.create(meanTempMinSlider, {
+        start: [-70, 30],
+        step: 0.1,
+        connect: true,
+        tooltips: [true, true],
+        range: {
+          min: -70,
+          max: 30,
+        },
+      });
+
+      var meanTempMaxSlider = document.getElementById("mean-temp-max-slider");
+
+      noUiSlider.create(meanTempMaxSlider, {
+        start: [-35, 40],
+        step: 0.1,
+        connect: true,
+        tooltips: [true, true],
+        range: {
+          min: -35,
+          max: 40,
+        },
       });
     </script>
   </body>
