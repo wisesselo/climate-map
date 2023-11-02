@@ -146,28 +146,44 @@
         width: 28px;
         margin-left: -5px;
       }
+
+      label {
+        width: 1.2em;
+    height: 1.2em;
+      }
+
+      input[type=radio] {
+        position: absolute; 
+        right: 15px;
+    border: 0px;
+    width: 1.2em;
+    height: 1.2em;
+}
     </style>
   </head>
   <body>
     <div id="map"></div>
     <div id="map-input" class="map-overlay top">
       <div class="map-overlay-inner">
-        <label>Darkest Month Solar Radiation (kJ/m²/day) [fill-color]</label>
-        <div id="solar-min-slider" style="margin: 30px 15px 15px 15px;"></div>
-        <label>Brightest Month Solar Radiation (kJ/m²/day)</label>
-        <div id="solar-max-slider" style="margin: 30px 15px 15px 15px;"></div>
-      </div>
-      <div class="map-overlay-inner">
-        <label>Driest Month Precipitation (mm/month)</label>
-        <div id="precip-min-slider" style="margin: 30px 15px 15px 15px;"></div>
-        <label>Wettest Month Precipitation (mm/month)</label>
-        <div id="precip-max-slider" style="margin: 30px 15px 15px 15px;"></div>
-      </div>
-      <div class="map-overlay-inner">
-        <label>Coldest Month Mean Temperature (°C)</label>
-        <div id="mean-temp-min-slider" style="margin: 30px 15px 15px 15px;"></div>
-        <label>Warmest Month Mean Temperature (°C)</label>
-        <div id="mean-temp-max-slider" style="margin: 30px 15px 15px 15px;"></div>
+        <label>Darkest Month Solar Radiation (kJ/m²/day)</label> <input type="radio" name="fill-color-radio" id="solar-min-radio" checked>
+        <div id="solar-min-slider" class="slider-class" style="margin: 30px 15px 15px 15px;"></div>
+        <label>Brightest Month Solar Radiation (kJ/m²/day)</label> <input type="radio" name="fill-color-radio" id="solar-max-radio">
+        <div id="solar-max-slider" class="slider-class" style="margin: 30px 15px 15px 15px;"></div>
+
+        <label>Driest Month Precipitation (mm/month)</label> <input type="radio" name="fill-color-radio" id="precip-min-radio">
+        <div id="precip-min-slider" class="slider-class" style="margin: 30px 15px 15px 15px;"></div>
+        <label>Wettest Month Precipitation (mm/month)</label> <input type="radio" name="fill-color-radio" id="precip-max-radio">
+        <div id="precip-max-slider" class="slider-class" style="margin: 30px 15px 15px 15px;"></div>
+
+        <label>Coldest Month Mean Temperature (°C)</label> <input type="radio" name="fill-color-radio" id="mean-temp-min-radio">
+        <div id="mean-temp-min-slider" class="slider-class" style="margin: 30px 15px 15px 15px;"></div>
+        <label>Warmest Month Mean Temperature (°C)</label> <input type="radio" name="fill-color-radio" id="mean-temp-max-radio">
+        <div id="mean-temp-max-slider" class="slider-class" style="margin: 30px 15px 15px 15px;"></div>
+
+        <label>Coldest Month Mean Humidity (%)</label> <input type="radio" name="fill-color-radio" id="mean-rh-min-radio">
+        <div id="mean-rh-min-slider" class="slider-class" style="margin: 30px 15px 15px 15px;"></div>
+        <label>Warmest Month Mean Humidity (%)</label> <input type="radio" name="fill-color-radio" id="mean-rh-max-radio">
+        <div id="mean-rh-max-slider" class="slider-class" style="margin: 30px 15px 15px 15px;"></div>
       </div>
       </div>
     </div>
@@ -181,10 +197,10 @@
       const map = new maplibregl.Map({
         container: "map", // container id
         style: "https://demotiles.maplibre.org/style.json", // style URL
-        center: [0, 20], // starting position [lng, lat]
-        zoom: 2, // starting zoom
+        center: [0, 0], // starting position [lng, lat]
+        zoom: 1, // starting zoom
         minZoom: 1,
-        maxZoom: 6,
+        maxZoom: 7,
       });
 
       function filterBy(
@@ -199,7 +215,11 @@
         tavMinLeftValue,
         tavMinRightValue,
         tavMaxLeftValue,
-        tavMaxRightValue
+        tavMaxRightValue,
+        rhMinLeftValue,
+        rhMinRightValue,
+        rhMaxLeftValue,
+        rhMaxRightValue
       ) {
         const filters = [
           "all",
@@ -215,9 +235,31 @@
           ["<=", "tav_min", tavMinRightValue],
           [">=", "tav_max", tavMaxLeftValue],
           ["<=", "tav_max", tavMaxRightValue],
+          [">=", "rh_tavmin", rhMinLeftValue],
+          ["<=", "rh_tavmin", rhMinRightValue],
+          [">=", "rh_tavmax", rhMaxLeftValue],
+          ["<=", "rh_tavmax", rhMaxRightValue],
         ];
         map.setFilter("polygon-layer", filters);
       }
+
+      // Constant value boundaries
+      const SOLAR_MIN_LO = 0;
+      const SOLAR_MIN_HI = 21014;
+      const SOLAR_MAX_LO = 10964;
+      const SOLAR_MAX_HI = 44561;
+      const PRECIP_MIN_LO = 0;
+      const PRECIP_MIN_HI = 476;
+      const PRECIP_MAX_LO = 0;
+      const PRECIP_MAX_HI = 2328;
+      const TAV_MIN_LO = -68.1;
+      const TAV_MIN_HI = 29;
+      const TAV_MAX_LO = -35;
+      const TAV_MAX_HI = 39.4;
+      const RH_MIN_LO = 0;
+      const RH_MIN_HI = 100;
+      const RH_MAX_LO = 0;
+      const RH_MAX_HI = 100;
 
       map.on("load", () => {
         map.addLayer({
@@ -225,19 +267,21 @@
           type: "fill",
           source: {
             type: "vector",
-            url: "pmtiles://tiles/filenew.pmtiles", //,"http://localhost:3000/filetest"
+            url: "pmtiles://tiles/spth.pmtiles", //,"http://localhost:3000/filetest"
           },
           filter: ["==", "$type", "Polygon"],
-          "source-layer": "spt_minmax",
+          "source-layer": "spth",
           paint: {
             "fill-outline-color": "rgba(0,0,0,0)",
             "fill-color": [
               "interpolate",
               ["linear"],
               ["number", ["get", "sol_min"]],
-              0,
+              SOLAR_MIN_LO,
               "#000000",
-              25000,
+              (SOLAR_MIN_LO+SOLAR_MIN_HI)/2,
+              "#DAA520",
+              SOLAR_MIN_HI,
               "#ffffff",
             ], //"#ffe100"
             "fill-opacity": 0.75,
@@ -287,116 +331,16 @@
         //   );
         //  });
 
-        document.getElementById("map-input").addEventListener("mouseup", () => {
-          filterBy(
-            solarMinSlider.noUiSlider.get(true)[0],
-            solarMinSlider.noUiSlider.get(true)[1],
-            solarMaxSlider.noUiSlider.get(true)[0],
-            solarMaxSlider.noUiSlider.get(true)[1],
-            precipMinSlider.noUiSlider.get(true)[0],
-            precipMinSlider.noUiSlider.get(true)[1],
-            precipMaxSlider.noUiSlider.get(true)[0],
-            precipMaxSlider.noUiSlider.get(true)[1],
-            meanTempMinSlider.noUiSlider.get(true)[0],
-            meanTempMinSlider.noUiSlider.get(true)[1],
-            meanTempMaxSlider.noUiSlider.get(true)[0],
-            meanTempMaxSlider.noUiSlider.get(true)[1]
-          );
-        });
-        //   // Precipitation
+        //document.getElementById("map-input").addEventListener("change", () => {
 
-        //   const preciMinLeftValue = parseInt(
-        //     document.getElementById("pre_min_slider_left").value
-        //   );
-        //   let preciMinRightValue = parseInt(
-        //     document.getElementById("pre_min_slider_right").value
-        //   );
-        //   if (preciMinRightValue >= 300) {
-        //     preciMinRightValue = 9000;
-        //   }
-
-        //   const preciMaxLeftValue = parseInt(
-        //     document.getElementById("pre_max_slider_left").value
-        //   );
-        //   let preciMaxRightValue = parseInt(
-        //     document.getElementById("pre_max_slider_right").value
-        //   );
-        //   if (preciMaxRightValue >= 900) {
-        //     preciMaxRightValue = 9000;
-        //   }
-
-        //   // Solar
-        //   const solarMinLeftValue = parseInt(
-        //     document.getElementById("sol_min_slider_left").value
-        //   );
-        //   let solarMinRightValue = parseInt(
-        //     document.getElementById("sol_min_slider_right").value
-        //   );
-        //   if (solarMinRightValue >= 25000) {
-        //     solarMinRightValue = 60000;
-        //   }
-        //   // solar nouislider
-        //   solarMinRightValue = slider.noUiSlider.get(true)[1];
-
-        //   const solarMaxLeftValue = parseInt(
-        //     document.getElementById("sol_max_slider_left").value
-        //   );
-        //   let solarMaxRightValue = parseInt(
-        //     document.getElementById("sol_max_slider_right").value
-        //   );
-        //   if (solarMaxRightValue >= 30000) {
-        //     solarMaxRightValue = 60000;
-        //   }
-
-        //   // Temp
-        //   let tavMinLeftValue = parseInt(
-        //     document.getElementById("tav_min_slider_left").value
-        //   );
-        //   if (tavMinLeftValue <= -50) {
-        //     tavMinLeftValue = -200;
-        //   }
-        //   let tavMinRightValue = parseInt(
-        //     document.getElementById("tav_min_slider_right").value
-        //   );
-        //   if (tavMinRightValue >= 30) {
-        //     tavMinRightValue = 60;
-        //   }
-
-        //   let tavMaxLeftValue = parseInt(
-        //     document.getElementById("tav_max_slider_left").value
-        //   );
-        //   if (tavMaxLeftValue <= -20) {
-        //     tavMaxLeftValue = -200;
-        //   }
-        //   let tavMaxRightValue = parseInt(
-        //     document.getElementById("tav_max_slider_right").value
-        //   );
-        //   if (tavMaxRightValue >= 40) {
-        //     tavMaxRightValue = 60;
-        //   }
-
-        //   filterBy(
-        //     solarMinLeftValue,
-        //     solarMinRightValue,
-        //     solarMaxLeftValue,
-        //     solarMaxRightValue,
-        //     preciMinLeftValue,
-        //     preciMinRightValue,
-        //     preciMaxLeftValue,
-        //     preciMaxRightValue,
-        //     tavMinLeftValue,
-        //     tavMinRightValue,
-        //     tavMaxLeftValue,
-        //     tavMaxRightValue
-        //   );
-        // });
+          
       });
 
       map.on("mousemove", (e) => {
+        e.preventDefault();
         const features = map.queryRenderedFeatures(e.point);
 
-        // Limit the number of properties we're displaying for
-        // legibility and performance
+        // Limit the number of properties we're displaying
         const displayProperties = ["properties", "id", "layer"];
 
         const displayFeatures = features.map((feat) => {
@@ -414,30 +358,32 @@
         );
       });
 
+
+
       // Solar
       var solarMinSlider = document.getElementById("solar-min-slider");
 
       noUiSlider.create(solarMinSlider, {
-        start: [0, 25000],
-        step: 100,
+        start: [SOLAR_MIN_LO, SOLAR_MIN_HI],
+        step: 1,
         connect: true,
         tooltips: [true, true],
         range: {
-          min: 0,
-          max: 25000,
+          min: SOLAR_MIN_LO,
+          max: SOLAR_MIN_HI,
         },
       });
 
       var solarMaxSlider = document.getElementById("solar-max-slider");
 
       noUiSlider.create(solarMaxSlider, {
-        start: [0, 45000],
-        step: 100,
+        start: [SOLAR_MAX_LO, SOLAR_MAX_HI],
+        step: 1,
         connect: true,
         tooltips: [true, true],
         range: {
-          min: 0,
-          max: 45000,
+          min: SOLAR_MAX_LO,
+          max: SOLAR_MAX_HI,
         },
       });
 
@@ -445,26 +391,26 @@
       var precipMinSlider = document.getElementById("precip-min-slider");
 
       noUiSlider.create(precipMinSlider, {
-        start: [0, 300],
+        start: [PRECIP_MIN_LO, PRECIP_MIN_HI],
         step: 1,
         connect: true,
         tooltips: [true, true],
         range: {
-          min: 0,
-          max: 300,
+          min: PRECIP_MIN_LO,
+          max: PRECIP_MIN_HI,
         },
       });
 
       var precipMaxSlider = document.getElementById("precip-max-slider");
 
       noUiSlider.create(precipMaxSlider, {
-        start: [0, 900],
+        start: [PRECIP_MAX_LO, PRECIP_MAX_HI],
         step: 1,
         connect: true,
         tooltips: [true, true],
         range: {
-          min: 0,
-          max: 900,
+          min: PRECIP_MAX_LO,
+          max: PRECIP_MAX_HI,
         },
       });
 
@@ -472,28 +418,236 @@
       var meanTempMinSlider = document.getElementById("mean-temp-min-slider");
 
       noUiSlider.create(meanTempMinSlider, {
-        start: [-70, 30],
-        step: 0.1,
+        start: [TAV_MIN_LO, TAV_MIN_HI],
+        step: 1,
         connect: true,
         tooltips: [true, true],
         range: {
-          min: -70,
-          max: 30,
+          min: TAV_MIN_LO,
+          max: TAV_MIN_HI,
         },
       });
 
       var meanTempMaxSlider = document.getElementById("mean-temp-max-slider");
 
       noUiSlider.create(meanTempMaxSlider, {
-        start: [-35, 40],
-        step: 0.1,
+        start: [TAV_MAX_LO, TAV_MAX_HI],
+        step: 1,
         connect: true,
         tooltips: [true, true],
         range: {
-          min: -35,
-          max: 40,
+          min: TAV_MAX_LO,
+          max: TAV_MAX_HI,
         },
       });
+
+      var meanRhMinSlider = document.getElementById("mean-rh-min-slider");
+
+      noUiSlider.create(meanRhMinSlider, {
+        start: [RH_MIN_LO, RH_MIN_HI],
+        step: 1,
+        connect: true,
+        tooltips: [true, true],
+        range: {
+          min: RH_MIN_LO,
+          max: RH_MIN_HI,
+        },
+      });
+
+      var meanRhMaxSlider = document.getElementById("mean-rh-max-slider");
+
+      noUiSlider.create(meanRhMaxSlider, {
+        start: [RH_MAX_LO, RH_MAX_HI],
+        step: 1,
+        connect: true,
+        tooltips: [true, true],
+        range: {
+          min: RH_MAX_LO,
+          max: RH_MAX_HI,
+        },
+      });
+
+
+
+      const sliders = document.getElementsByClassName("slider-class");
+          
+          for (var i = 0; i < sliders.length; i++) {
+    sliders[i].noUiSlider.on("change", () => {
+          filterBy(
+            solarMinSlider.noUiSlider.get(true)[0],
+            solarMinSlider.noUiSlider.get(true)[1],
+            solarMaxSlider.noUiSlider.get(true)[0],
+            solarMaxSlider.noUiSlider.get(true)[1],
+            precipMinSlider.noUiSlider.get(true)[0],
+            precipMinSlider.noUiSlider.get(true)[1],
+            precipMaxSlider.noUiSlider.get(true)[0],
+            precipMaxSlider.noUiSlider.get(true)[1],
+            meanTempMinSlider.noUiSlider.get(true)[0],
+            meanTempMinSlider.noUiSlider.get(true)[1],
+            meanTempMaxSlider.noUiSlider.get(true)[0],
+            meanTempMaxSlider.noUiSlider.get(true)[1],
+            meanRhMinSlider.noUiSlider.get(true)[0],
+            meanRhMinSlider.noUiSlider.get(true)[1],
+            meanRhMaxSlider.noUiSlider.get(true)[0],
+            meanRhMaxSlider.noUiSlider.get(true)[1]
+          );
+        });
+}
+
+            // Changing fill-color source
+            document.getElementById("solar-min-radio").addEventListener("change", () => {
+        map.setPaintProperty(
+              'polygon-layer',
+              'fill-color',
+              [
+              "interpolate",
+              ["linear"],
+              ["number", ["get", "sol_min"]],
+              0,
+              "#000000",
+              5000,
+              "#b59545",
+              20000,
+              "#FFD580",
+              25000,
+              "#ff0000",
+              ]
+            );
+      })
+
+      document.getElementById("solar-max-radio").addEventListener("change", () => {
+        map.setPaintProperty(
+              'polygon-layer',
+              'fill-color',
+              [
+              "interpolate",
+              ["linear"],
+              ["number", ["get", "sol_max"]],
+              0,
+              "#000000",
+              10000,
+              "#b59545",
+              25000,
+              "#FFD580",
+              30000,
+              "#ff0000",
+              ]
+            );
+      })
+
+      document.getElementById("precip-min-radio").addEventListener("change", () => {
+        map.setPaintProperty(
+              'polygon-layer',
+              'fill-color',
+              [
+              "interpolate",
+              ["exponential", 0.99],
+              ["number", ["get", "pre_min"]],
+              0,
+              "#F5DEB3",
+              50,
+              "#808000",
+              450,
+              "#2AAA8A",
+              2250,
+              "#00FFFF",
+              ]
+            );
+      })
+
+      document.getElementById("precip-max-radio").addEventListener("change", () => {
+        map.setPaintProperty(
+              'polygon-layer',
+              'fill-color',
+              [
+              "interpolate",
+              ["exponential", 0.99],
+              ["number", ["get", "pre_max"]],
+              0,
+              "#F5DEB3",
+              50,
+              "#808000",
+              450,
+              "#2AAA8A",
+              2250,
+              "#00FFFF",
+              ]
+            );
+      })
+
+      document.getElementById("mean-temp-min-radio").addEventListener("change", () => {
+        map.setPaintProperty(
+              'polygon-layer',
+              'fill-color',
+              [
+              "interpolate",
+              ["exponential", 0.99],
+              ["number", ["get", "tav_min"]],
+              -30,
+              "#000018",
+              0,
+              "#83bf54",
+              40,
+              "#ff5c5c",
+              ]
+            );
+      })
+
+      document.getElementById("mean-temp-max-radio").addEventListener("change", () => {
+        map.setPaintProperty(
+              'polygon-layer',
+              'fill-color',
+              [
+              "interpolate",
+              ["exponential", 0.99],
+              ["number", ["get", "tav_max"]],
+              -10,
+              "#000018",
+              10,
+              "#83bf54",
+              40,
+              "#ff5c5c",
+              ]
+            );
+      })
+
+      document.getElementById("mean-rh-min-radio").addEventListener("change", () => {
+        map.setPaintProperty(
+              'polygon-layer',
+              'fill-color',
+              [
+              "interpolate",
+              ["exponential", 0.99],
+              ["number", ["get", "rh_tavmin"]],
+              20,
+              "#F5DEB3",
+              60,
+              "#808000",
+              100,
+              "#2AAA8A",
+              ]
+            );
+      })
+
+      document.getElementById("mean-rh-max-radio").addEventListener("change", () => {
+        map.setPaintProperty(
+              'polygon-layer',
+              'fill-color',
+              [
+              "interpolate",
+              ["exponential", 0.99],
+              ["number", ["get", "rh_tavmax"]],
+              20,
+              "#F5DEB3",
+              60,
+              "#808000",
+              100,
+              "#2AAA8A",
+              ]
+            );
+      })
+
+
     </script>
   </body>
 </html>
