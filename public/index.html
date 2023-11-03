@@ -40,7 +40,7 @@
         background: rgba(255, 255, 255, 0.8);
       }
       #map canvas {
-        cursor: crosshair;
+        cursor: default;
       }
 
       .map-overlay {
@@ -261,18 +261,28 @@
       const RH_MAX_LO = 0;
       const RH_MAX_HI = 100;
 
+      let hoveredFeatureId = null;
+
       map.on("load", () => {
+
+        map.addSource('polygon-source', {
+            'type': 'vector',
+            'url': "pmtiles://tiles/spth.pmtiles", //,"http://localhost:3000/filetest"
+        });
+
         map.addLayer({
           id: "polygon-layer",
           type: "fill",
-          source: {
-            type: "vector",
-            url: "pmtiles://tiles/spth.pmtiles", //,"http://localhost:3000/filetest"
-          },
+          source: 'polygon-source',
           filter: ["==", "$type", "Polygon"],
           "source-layer": "spth",
           paint: {
-            "fill-outline-color": "rgba(0,0,0,0)",
+            "fill-outline-color": [
+            'case',
+            ['boolean', ['feature-state', 'hover'], false],
+            "rgba(0,0,0,1)",
+            "rgba(0,0,0,0)"
+          ],
             "fill-color": [
               "interpolate",
               ["linear"],
@@ -332,6 +342,39 @@
         //  });
 
         //document.getElementById("map-input").addEventListener("change", () => {
+
+                  // When the user moves their mouse over the state-fill layer, we'll update the
+        // feature state for the feature under the mouse.
+        
+        map.on('mousemove', 'polygon-layer', (e) => {
+            if (e.features.length > 0) {
+                if (hoveredFeatureId) {
+        
+                    map.setFeatureState(
+                        {source: 'polygon-source', sourceLayer: 'spth', id: hoveredFeatureId},
+                        {hover: false}
+                    );
+                }
+                hoveredFeatureId = e.features[0].id;
+                map.setFeatureState(
+                    {source: 'polygon-source', sourceLayer: 'spth', id: hoveredFeatureId},
+                    {hover: true}
+                );
+            }
+        });
+
+        // When the mouse leaves the state-fill layer, update the feature state of the
+        // previously hovered feature.
+        map.on('mouseleave', 'polygon-layer', () => {
+            if (hoveredFeatureId) {
+                map.setFeatureState(
+                    {source: 'polygon-source', sourceLayer: 'spth', id: hoveredFeatureId},
+                    {hover: false}
+                );
+            }
+            hoveredFeatureId = null;
+        });
+
 
           
       });
