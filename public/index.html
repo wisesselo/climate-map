@@ -31,6 +31,7 @@
       }
 
       #features {
+        z-index:4;
         position: absolute;
         top: 0;
         right: 0;
@@ -38,12 +39,14 @@
         width: 20%;
         overflow: scroll;
         background: rgba(255, 255, 255, 0.8);
+        visibility: hidden;
       }
       #map canvas {
         cursor: default;
       }
 
       .map-overlay {
+        z-index:4;
         font: 12px/20px "Helvetica Neue", Arial, Helvetica, sans-serif;
         position: absolute;
         width: 25%;
@@ -62,90 +65,7 @@
         margin-bottom: 5px;
       }
 
-      [slider] {
-        position: relative;
-        width: 100%;
-        height: 10px;
-        margin: 28px 0 10px 0;
-      }
 
-      [slider] > div {
-        position: relative;
-        width: 100%;
-      }
-
-      [slider] > div > [inverse-left] {
-        position: absolute;
-        left: 0;
-        height: 8px;
-        background-color: #cccccc;
-      }
-
-      [slider] > div > [inverse-right] {
-        position: absolute;
-        right: 0;
-        height: 8px;
-        background-color: #cccccc;
-      }
-
-      [slider] > div > [range] {
-        position: absolute;
-        height: 8px;
-        background-color: #ffe100;
-      }
-
-      [slider] > div > [thumb-left] {
-        position: absolute;
-        pointer-events: all;
-        margin-right: 10px;
-        top: -7px;
-        height: 21px;
-        width: 12px;
-        cursor: not-allowed;
-        background-color: #444444;
-      }
-
-      [slider] > div > [thumb-right] {
-        position: absolute;
-        pointer-events: all;
-        margin-left: -10px;
-        top: -7px;
-        height: 21px;
-        width: 12px;
-        cursor: not-allowed;
-        background-color: #444444;
-      }
-
-      [slider] > input[type="range"] {
-        position: absolute;
-        width: 100%;
-        pointer-events: none;
-        z-index: 3;
-        height: 14px;
-        opacity: 0;
-      }
-
-      div[slider] > input[type="range"]::-ms-thumb {
-        pointer-events: all;
-      }
-
-      div[slider] > input[type="range"]::-moz-range-thumb {
-        pointer-events: all;
-      }
-
-      div[slider] > input[type="range"]::-webkit-slider-thumb {
-        pointer-events: all;
-      }
-
-      [slider] > div > [sign] {
-        opacity: 1;
-        position: absolute;
-        top: -28px;
-        z-index: 3;
-        color: #000000;
-        width: 28px;
-        margin-left: -5px;
-      }
 
       label {
         width: 1.2em;
@@ -159,11 +79,162 @@
     width: 1.2em;
     height: 1.2em;
 }
+
+#spinner-container {
+  position:absolute;
+    z-index:3;
+    width:100%;
+    height:100%;
+    display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+  opacity:0.75;
+  pointer-events: none;
+}
+
+.spinner {
+  font-size: 75px;
+  position: relative;
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+}
+.spinner.center {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+}
+
+.spinner-blade {
+  position: absolute;
+  left: 0.4629em;
+  bottom: 0;
+  width: 0.074em;
+  height: 0.2777em;
+  border-radius: 0.5em;
+  background-color: transparent;
+  transform-origin: center -0.2222em;
+  -webkit-animation: spinner-fade 1s infinite linear;
+          animation: spinner-fade 1s infinite linear;
+}
+.spinner-blade:nth-child(1) {
+  -webkit-animation-delay: 0s;
+          animation-delay: 0s;
+  transform: rotate(0deg);
+}
+.spinner-blade:nth-child(2) {
+  -webkit-animation-delay: 0.083s;
+          animation-delay: 0.083s;
+  transform: rotate(30deg);
+}
+.spinner-blade:nth-child(3) {
+  -webkit-animation-delay: 0.166s;
+          animation-delay: 0.166s;
+  transform: rotate(60deg);
+}
+.spinner-blade:nth-child(4) {
+  -webkit-animation-delay: 0.249s;
+          animation-delay: 0.249s;
+  transform: rotate(90deg);
+}
+.spinner-blade:nth-child(5) {
+  -webkit-animation-delay: 0.332s;
+          animation-delay: 0.332s;
+  transform: rotate(120deg);
+}
+.spinner-blade:nth-child(6) {
+  -webkit-animation-delay: 0.415s;
+          animation-delay: 0.415s;
+  transform: rotate(150deg);
+}
+.spinner-blade:nth-child(7) {
+  -webkit-animation-delay: 0.498s;
+          animation-delay: 0.498s;
+  transform: rotate(180deg);
+}
+.spinner-blade:nth-child(8) {
+  -webkit-animation-delay: 0.581s;
+          animation-delay: 0.581s;
+  transform: rotate(210deg);
+}
+.spinner-blade:nth-child(9) {
+  -webkit-animation-delay: 0.664s;
+          animation-delay: 0.664s;
+  transform: rotate(240deg);
+}
+.spinner-blade:nth-child(10) {
+  -webkit-animation-delay: 0.747s;
+          animation-delay: 0.747s;
+  transform: rotate(270deg);
+}
+.spinner-blade:nth-child(11) {
+  -webkit-animation-delay: 0.83s;
+          animation-delay: 0.83s;
+  transform: rotate(300deg);
+}
+.spinner-blade:nth-child(12) {
+  -webkit-animation-delay: 0.913s;
+          animation-delay: 0.913s;
+  transform: rotate(330deg);
+}
+
+@-webkit-keyframes spinner-fade {
+  0% {
+    background-color: #000000;
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+@keyframes spinner-fade {
+  0% {
+    background-color: #000000;
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.maplibregl-popup-content {
+  opacity:0.9;
+  padding: 10px;
+  border-radius:6px;
+}
+.maplibregl-popup-tip {
+  opacity:0.9;
+}
+.maplibregl-popup-close-button {
+  border-radius:6px;
+}
     </style>
   </head>
   <body>
+    <div id="spinner-container">  <div class="spinner center">
+    <div class="spinner-blade"></div>
+    <div class="spinner-blade"></div>
+    <div class="spinner-blade"></div>
+    <div class="spinner-blade"></div>
+    <div class="spinner-blade"></div>
+    <div class="spinner-blade"></div>
+    <div class="spinner-blade"></div>
+    <div class="spinner-blade"></div>
+    <div class="spinner-blade"></div>
+    <div class="spinner-blade"></div>
+    <div class="spinner-blade"></div>
+    <div class="spinner-blade"></div>
+  </div></div>
     <div id="map"></div>
+    
+
+
+
     <div id="map-input" class="map-overlay top">
+
       <div class="map-overlay-inner">
         <label>Darkest Month Solar Radiation (kJ/m²/day)</label> <input type="radio" name="fill-color-radio" id="solar-min-radio" checked>
         <div id="solar-min-slider" class="slider-class" style="margin: 30px 15px 15px 15px;"></div>
@@ -197,8 +268,8 @@
       const map = new maplibregl.Map({
         container: "map", // container id
         style: "style.json", // style URL
-        center: [0, 0], // starting position [lng, lat]
-        zoom: 1, // starting zoom
+        center: [-35, 20], // starting position [lng, lat]
+        zoom: 1.5, // starting zoom
         minZoom: 1,
         maxZoom: 7,
       });
@@ -263,11 +334,38 @@
 
       let hoveredFeatureId = null;
 
+      const spinnerEl = document.getElementById('spinner');
+const backgroundEl = document.getElementById('loading-background');
+const addLayerBtn = document.getElementById('addlayer');
+
+
+function startSpinner () {
+        loadingSpinner(true);
+}
+function stopSpinner (e) {
+        loadingSpinner(false);
+
+}
+
+function loadingSpinner(on) {
+    if (on) {
+      document.getElementById('spinner-container').style.visibility = "visible"; 
+    } else {
+      document.getElementById('spinner-container').style.visibility = "hidden"; 
+    }
+}
+
       map.on("load", () => {
+        loadingSpinner(true);
 
         map.addSource('polygon-source', {
             'type': 'vector',
             'url': "pmtiles://tiles/spth.pmtiles", //,"http://localhost:3000/filetest"
+        });
+
+        map.addSource('point-source', {
+            'type': 'vector',
+            'url': "pmtiles://tiles/pop7.pmtiles", //,"http://localhost:3000/filetest"
         });
 
         map.addLayer({
@@ -298,29 +396,29 @@
           },
         });
 
-        // map.addLayer({
-        //   id: "point-layer",
-        //   type: "circle",
-        //   source: {
-        //     type: "vector",
-        //     url: "pmtiles://tiles/filenew.pmtiles",
-        //   },
-        //   filter: ["==", "$type", "Point"],
-        //   "source-layer": "spt_minmax",
-        //   paint: {
-        //     "circle-radius": ["+", ["*", ["get", "SCALERANK"], -1], 10], /* [
-        //       "interpolate",
-        //       ["linear"],
-        //       ["zoom"],
-        //       2,
-        //       ["*", ["+", ["*", ["get", "SCALERANK"], -1], 7], 0.6],
-        //       6,
-        //       ["+", ["*", ["get", "SCALERANK"], -1], 10],
-        //     ], */
-        //     "circle-color": "#B42222",
-        //     "circle-opacity": 1
-        //   },
-        // });
+
+
+        map.addLayer({
+          id: "point-layer",
+          type: "circle",
+          source: "point-source",
+          "source-layer": "popdata",
+          paint: {
+            "circle-radius": [
+              "interpolate",
+              ["linear"],
+              ["zoom"],
+              2,
+              1,
+              6,
+              6,
+            ], 
+            "circle-color": "#000000",
+            "circle-stroke-color": "#cccccc",
+            "circle-stroke-width": 0.2,
+            "circle-opacity": 0.7
+          },
+        });
 
         // Binding signature
         // solarMinSlider.noUiSlider.on('change', function () {
@@ -345,23 +443,28 @@
 
                   // When the user moves their mouse over the state-fill layer, we'll update the
         // feature state for the feature under the mouse.
+
+        map.on('idle', stopSpinner);
+        //map.on('data', stopSpinner);
+        map.on('data', startSpinner);
+        //map.on('dataloading', startSpinner);
         
-        map.on('mousemove', 'polygon-layer', (e) => {
-            if (e.features.length > 0) {
-                if (hoveredFeatureId) {
+        // map.on('mousemove', 'polygon-layer', (e) => {
+        //     if (e.features.length > 0) {
+        //         if (hoveredFeatureId) {
         
-                    map.setFeatureState(
-                        {source: 'polygon-source', sourceLayer: 'spth', id: hoveredFeatureId},
-                        {hover: false}
-                    );
-                }
-                hoveredFeatureId = e.features[0].id;
-                map.setFeatureState(
-                    {source: 'polygon-source', sourceLayer: 'spth', id: hoveredFeatureId},
-                    {hover: true}
-                );
-            }
-        });
+        //             map.setFeatureState(
+        //                 {source: 'polygon-source', sourceLayer: 'spth', id: hoveredFeatureId},
+        //                 {hover: false}
+        //             );
+        //         }
+        //         hoveredFeatureId = e.features[0].id;
+        //         map.setFeatureState(
+        //             {source: 'polygon-source', sourceLayer: 'spth', id: hoveredFeatureId},
+        //             {hover: true}
+        //         );
+        //     }
+        // });
 
         // When the mouse leaves the state-fill layer, update the feature state of the
         // previously hovered feature.
@@ -379,27 +482,96 @@
           
       });
 
-      map.on("mousemove", (e) => {
-        e.preventDefault();
-        const features = map.queryRenderedFeatures(e.point);
-
-        // Limit the number of properties we're displaying
-        const displayProperties = ["properties", "id", "layer"];
-
-        const displayFeatures = features.map((feat) => {
-          const displayFeat = {};
-          displayProperties.forEach((prop) => {
-            displayFeat[prop] = feat[prop];
-          });
-          return displayFeat;
+        // Create a popup, but don't add it to the map yet.
+        const popup = new maplibregl.Popup({
+            closeButton: true,
+            closeOnClick: false
         });
 
-        document.getElementById("features").innerHTML = JSON.stringify(
-          displayFeatures,
-          null,
-          2
-        );
+
+      // map.on("mousemove", "polygon-layer", (e) => {
+      //   //e.preventDefault();
+      //   const features = map.queryRenderedFeatures(e.point);
+
+      //   // Limit the number of properties we're displaying
+      //   const displayProperties = ["properties", "geometry", "id", "layer"];
+
+      //   const displayFeatures = features.map((feat) => {
+      //     const displayFeat = {};
+      //     displayProperties.forEach((prop) => {
+      //       displayFeat[prop] = feat[prop];
+      //     });
+      //     return displayFeat;
+      //   });
+
+      //   document.getElementById("features").innerHTML = JSON.stringify(
+      //     displayFeatures,
+      //     null,
+      //     2
+      //   );
+
+      // });
+
+      
+      // map.on("click", "polygon-layer", (e) => {
+
+
+      //   console.log(e)
+      //   const coordinates = e.lngLat;
+      //   const properties = "Darkest: " + e.features[0].properties.sol_min + 
+      //                   " kJ/m²/day<br>Brightest: " + e.features[0].properties.sol_max + 
+      //                   " kJ/m²/day<br>Driest: " + e.features[0].properties.pre_min + 
+      //                   " mm/month<br>Wettest: " + e.features[0].properties.pre_max + 
+      //                   " mm/month<br>Coldest Temp: " + e.features[0].properties.tav_min + 
+      //                   "°C<br>Warmest Temp: " + e.features[0].properties.tav_max + 
+      //                   "°C<br>Coldest Hum: " + e.features[0].properties.rh_tavmin + 
+      //                   "%<br>Warmest Hum: " + e.features[0].properties.rh_tavmax +
+      //                   "%";
+
+      //   popup.setLngLat(coordinates).setHTML(properties).addTo(map);
+      // });
+
+      map.on("click", (e) => {
+        const coordinates = e.lngLat;
+        //console.log(e)
+        const features = map.queryRenderedFeatures(e.point);
+        //console.log(features)
+        let properties = "";
+        if (features[0].source === "point-source") {
+        properties = "<b>" + features[0].properties.NAME + ", " + features[0].properties.ADM1NAME + ", " + features[0].properties.ADM0NAME + "</b>";
+
+        }
+        if (features[0].source === "polygon-source" && features[0].properties.sol_min) {
+            properties = "Darkest: " + features[0].properties.sol_min + 
+                        " kJ/m²/day<br>Brightest: " + features[0].properties.sol_max + 
+                        " kJ/m²/day<br>Driest: " + features[0].properties.pre_min + 
+                        " mm/month<br>Wettest: " + features[0].properties.pre_max + 
+                        " mm/month<br>Coldest Temp: " + features[0].properties.tav_min + 
+                        "°C<br>Warmest Temp: " + features[0].properties.tav_max + 
+                        "°C<br>Coldest Hum: " + features[0].properties.rh_tavmin + 
+                        "%<br>Warmest Hum: " + features[0].properties.rh_tavmax +
+                        "%";
+          }
+         else if (features[1] !== undefined && features[1].properties.sol_min !== undefined && features[1].source === "polygon-source") {
+            properties += "<br>Darkest: " + features[1].properties.sol_min + 
+                        " kJ/m²/day<br>Brightest: " + features[1].properties.sol_max + 
+                        " kJ/m²/day<br>Driest: " + features[1].properties.pre_min + 
+                        " mm/month<br>Wettest: " + features[1].properties.pre_max + 
+                        " mm/month<br>Coldest Temp: " + features[1].properties.tav_min + 
+                        "°C<br>Warmest Temp: " + features[1].properties.tav_max + 
+                        "°C<br>Coldest Hum: " + features[1].properties.rh_tavmin + 
+                        "%<br>Warmest Hum: " + features[1].properties.rh_tavmax +
+                        "%";
+          }
+
+          if (properties.length > 1) {
+        popup.setLngLat(coordinates).setHTML(properties).addTo(map);}
       });
+
+      // map.on('mouseleave', 'polygon-layer', () => {
+      //       popup.remove();
+      //   });
+
 
 
 
